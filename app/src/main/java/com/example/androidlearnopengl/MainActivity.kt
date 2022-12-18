@@ -8,14 +8,10 @@ import com.example.androidlearnopengl.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding;
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-//        binding.drawTriangleButton.setOnClickListener(View.OnClickListener {
-//
-//        })
+        val binding =
+            DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
     }
 
     // 1. create linear layout view with fragment

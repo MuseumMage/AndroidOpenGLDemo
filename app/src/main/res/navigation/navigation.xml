@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/navigation">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/chooseFragment">
+    <fragment
+        android:id="@+id/chooseFragment"
+        android:name="com.example.androidlearnopengl.ChooseFragment"
+        android:label="ChooseFragment"
+        tools:layout="@layout/fragment_choose">
+        <action
+            android:id="@+id/action_chooseFragment_to_drawTriangleFragment"
+            app:destination="@id/drawTriangleFragment" />
+    </fragment>
 
-
-
+    <fragment
+        android:id="@+id/drawTriangleFragment"
+        android:name="com.example.androidlearnopengl.DrawTriangleFragment"
+        android:label="DrawTriangleFragment"
+        tools:layout="@layout/fragment_draw_triangle"/>
 </navigation>

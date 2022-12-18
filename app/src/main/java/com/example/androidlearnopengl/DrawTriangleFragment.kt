@@ -15,8 +15,6 @@ class DrawTriangleFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        //return inflater.inflate(R.layout.fragment_draw_tiangle, container, false)
         val binding = DataBindingUtil.inflate<FragmentDrawTriangleBinding>(
             inflater,
             R.layout.fragment_draw_triangle,
