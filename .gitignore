@@ -90,6 +90,3 @@ lint/tmp/
 # IDE
 .idea/
 
-# local.property
-local.properties
-
