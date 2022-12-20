@@ -36,9 +36,15 @@ class Shape {
 
         // shader
         private val vertexShaderCode =
-            "attribute vec4 vPosition;" +
+            // This matrix member variable provides a hook to manipulate
+            // the coordinates of the objects that use this vertex shader
+            "uniform mat4 uMVPMatrix;" +
+                    "attribute vec4 vPosition;" +
                     "void main() {" +
-                    "  gl_Position = vPosition;" +
+                    // the matrix must be included as a modifier of gl_Position
+                    // Note that the uMVPMatrix factor *must be first* in order
+                    // for the matrix multiplication product to be correct.
+                    "  gl_Position = uMVPMatrix * vPosition;" +
                     "}"
 
         private val fragmentShaderCode =
@@ -47,6 +53,8 @@ class Shape {
                     "void main() {" +
                     "  gl_FragColor = vColor;" +
                     "}"
+
+        private var vPMatrixHandle: Int = 0
 
         // Set color with red, green, blue and alpha (opacity) values
         val color = floatArrayOf(0.63671875f, 0.76953125f, 0.22265625f, 1.0f)
@@ -85,7 +93,7 @@ class Shape {
                 }
             }
 
-        fun draw() {
+        fun draw(mvpMatrix: FloatArray) {
             // Add program to OpenGL ES environment
             GLES20.glUseProgram(mProgram)
 
@@ -104,6 +112,12 @@ class Shape {
                     vertexStride,
                     vertexBuffer
                 )
+
+                // get handle to shape's transformation matrix
+                vPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix")
+
+                // Pass the projection and view transformation to the shader
+                GLES20.glUniformMatrix4fv(vPMatrixHandle, 1, false, mvpMatrix, 0)
 
                 // get handle to fragment shader's vColor member
                 mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor").also { colorHandle ->
