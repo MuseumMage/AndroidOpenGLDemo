@@ -3,10 +3,11 @@ package com.example.androidlearnopengl
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.opengl.Matrix
+import android.os.SystemClock
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
-class MyRenderer : GLSurfaceView.Renderer {
+class AndroidDocRenderer : GLSurfaceView.Renderer {
 
     private lateinit var mTriangle: Shape.Triangle
     private lateinit var mSquare: Shape.Square
@@ -25,6 +26,8 @@ class MyRenderer : GLSurfaceView.Renderer {
     }
 
     override fun onDrawFrame(p0: GL10?) {
+        val scratch = FloatArray(16)
+
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
 
         // Set the camera position (View matrix)
@@ -33,8 +36,21 @@ class MyRenderer : GLSurfaceView.Renderer {
         // Calculate the projection and view transformation
         Matrix.multiplyMM(vPMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
 
-        // Draw shape
-        mTriangle.draw(vPMatrix)
+        // Create a rotation transformation for the triangle
+        val rotation = FloatArray(16)
+
+        val time = SystemClock.uptimeMillis() % 4000L
+        val angle = 0.090f * time.toInt()
+        Matrix.setRotateM(rotation, 0, angle, 0f, 0f, -1.0f)
+
+        // Combine the rotation matrix with the projection and camera view
+        // Note that the vPMatrix factor *must be first* in order
+        // for the matrix multiplication product to be correct.
+        Matrix.multiplyMM(scratch, 0, vPMatrix, 0, rotation, 0)
+
+
+        // Draw triangle
+        mTriangle.draw(scratch)
     }
 
     override fun onSurfaceChanged(p0: GL10?, width: Int, height: Int) {

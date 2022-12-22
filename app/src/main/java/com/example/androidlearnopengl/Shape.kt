@@ -15,10 +15,10 @@ var triangleCoords = floatArrayOf(     // in counterclockwise order:
 )
 
 var squareCoords = floatArrayOf(
-    -0.5f,  0.5f, 0.0f,      // top left
+    -0.5f, 0.5f, 0.0f,      // top left
     -0.5f, -0.5f, 0.0f,      // bottom left
     0.5f, -0.5f, 0.0f,      // bottom right
-    0.5f,  0.5f, 0.0f       // top right
+    0.5f, 0.5f, 0.0f       // top right
 )
 
 class Shape {
@@ -34,25 +34,10 @@ class Shape {
         private val vertexCount: Int = triangleCoords.size / COORDS_PER_VERTEX
         private val vertexStride: Int = COORDS_PER_VERTEX * 4 // 4 bytes per vertex
 
-        // shader
         private val vertexShaderCode =
-            // This matrix member variable provides a hook to manipulate
-            // the coordinates of the objects that use this vertex shader
-            "uniform mat4 uMVPMatrix;" +
-                    "attribute vec4 vPosition;" +
-                    "void main() {" +
-                    // the matrix must be included as a modifier of gl_Position
-                    // Note that the uMVPMatrix factor *must be first* in order
-                    // for the matrix multiplication product to be correct.
-                    "  gl_Position = uMVPMatrix * vPosition;" +
-                    "}"
-
+            Utils.readFile("AndroidDocVertexShader.glsl", OpenGLApplication.context)
         private val fragmentShaderCode =
-            "precision mediump float;" +
-                    "uniform vec4 vColor;" +
-                    "void main() {" +
-                    "  gl_FragColor = vColor;" +
-                    "}"
+            Utils.readFile("AndroidDocFragShader.glsl", OpenGLApplication.context)
 
         private var vPMatrixHandle: Int = 0
 
@@ -114,10 +99,12 @@ class Shape {
                 )
 
                 // get handle to shape's transformation matrix
-                vPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix")
+                vPMatrixHandle =
+                    GLES20.glGetUniformLocation(mProgram, "uMVPMatrix").also { matrixHandle ->
 
-                // Pass the projection and view transformation to the shader
-                GLES20.glUniformMatrix4fv(vPMatrixHandle, 1, false, mvpMatrix, 0)
+                        // Pass the projection and view transformation to the shader
+                        GLES20.glUniformMatrix4fv(it, 1, false, mvpMatrix, 0)
+                    }
 
                 // get handle to fragment shader's vColor member
                 mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor").also { colorHandle ->
@@ -162,7 +149,7 @@ class Shape {
             }
     }
 
-    companion object{
+    companion object {
         fun loadShader(type: Int, shaderCode: String): Int {
 
             // create a vertex shader type (GLES20.GL_VERTEX_SHADER)

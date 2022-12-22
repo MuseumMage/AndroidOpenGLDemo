@@ -1,11 +1,11 @@
 package com.example.androidlearnopengl
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.example.androidlearnopengl.databinding.FragmentChooseBinding
 
@@ -32,7 +32,7 @@ class ChooseFragment : Fragment() {
             container,
             false
         )
-        binding.drawTriangleButton.setOnClickListener { view : View ->
+        binding.drawTriangleButton.setOnClickListener { view: View ->
             view.findNavController().navigate(R.id.action_chooseFragment_to_drawTriangleFragment)
         }
         return binding.root

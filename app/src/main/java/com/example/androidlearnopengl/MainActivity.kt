@@ -1,9 +1,7 @@
 package com.example.androidlearnopengl
 
-import android.opengl.GLSurfaceView
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.androidlearnopengl.databinding.ActivityMainBinding
 

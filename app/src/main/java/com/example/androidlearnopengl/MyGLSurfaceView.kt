@@ -6,14 +6,14 @@ import android.opengl.GLSurfaceView
 
 class MyGLSurfaceView(context: Context) : GLSurfaceView(context) {
 
-    private val renderer: MyRenderer
+    private val renderer: AndroidDocRenderer
 
     init {
 
         // Create an OpenGL ES 2.0 context
         setEGLContextClientVersion(2)
 
-        renderer = MyRenderer()
+        renderer = AndroidDocRenderer()
 
         // Set the Renderer for drawing on the GLSurfaceView
         setRenderer(renderer)
