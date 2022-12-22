@@ -1,13 +1,14 @@
-package com.example.androidlearnopengl
+package com.example.androidlearnopengl.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.androidlearnopengl.MyGLSurfaceView
 
 
-class DrawTriangleFragment : Fragment() {
+class AndroidDocFragment : Fragment() {
 
     private lateinit var gLView: MyGLSurfaceView
 

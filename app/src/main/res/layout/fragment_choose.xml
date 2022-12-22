@@ -12,7 +12,7 @@
             android:id="@+id/draw_triangle_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="DrawTriangle" />
+            android:text="AndroidDocSample" />
 
     </FrameLayout>
 </layout>

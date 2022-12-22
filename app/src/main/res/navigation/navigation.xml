@@ -16,7 +16,7 @@
 
     <fragment
         android:id="@+id/drawTriangleFragment"
-        android:name="com.example.androidlearnopengl.DrawTriangleFragment"
+        android:name="com.example.androidlearnopengl.fragments.AndroidDocFragment"
         android:label="DrawTriangleFragment"
         tools:layout="@layout/fragment_draw_triangle"/>
 </navigation>

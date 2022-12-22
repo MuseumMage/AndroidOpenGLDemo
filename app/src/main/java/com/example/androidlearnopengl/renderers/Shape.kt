@@ -1,6 +1,8 @@
-package com.example.androidlearnopengl
+package com.example.androidlearnopengl.renderers
 
 import android.opengl.GLES20
+import com.example.androidlearnopengl.R
+import com.example.androidlearnopengl.utils.Utils
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -35,9 +37,9 @@ class Shape {
         private val vertexStride: Int = COORDS_PER_VERTEX * 4 // 4 bytes per vertex
 
         private val vertexShaderCode =
-            Utils.readFile(R.raw.android_doc_vertex_shader, OpenGLApplication.context)
+            Utils.readFile(R.raw.android_doc_vertex_shader)
         private val fragmentShaderCode =
-            Utils.readFile(R.raw.android_doc_frag_shader, OpenGLApplication.context)
+            Utils.readFile(R.raw.android_doc_frag_shader)
 
         private var vPMatrixHandle: Int = 0
 

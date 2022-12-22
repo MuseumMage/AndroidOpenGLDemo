@@ -1,9 +1,10 @@
-package com.example.androidlearnopengl
+package com.example.androidlearnopengl.renderers
 
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.opengl.Matrix
 import android.os.SystemClock
+import com.example.androidlearnopengl.renderers.Shape
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 

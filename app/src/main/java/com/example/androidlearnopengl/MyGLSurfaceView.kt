@@ -2,6 +2,7 @@ package com.example.androidlearnopengl
 
 import android.content.Context
 import android.opengl.GLSurfaceView
+import com.example.androidlearnopengl.renderers.AndroidDocRenderer
 
 
 class MyGLSurfaceView(context: Context) : GLSurfaceView(context) {

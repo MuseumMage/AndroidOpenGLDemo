@@ -1,12 +1,12 @@
-package com.example.androidlearnopengl
+package com.example.androidlearnopengl.utils
 
-import android.content.Context
+import com.example.androidlearnopengl.OpenGLApplication.Companion.context
 import java.io.*
 
 
 class Utils {
     companion object {
-        fun readFile(resid: Int, context: Context): String {
+        fun readFile(resid: Int): String {
             var inputStream: InputStream? = null
             var reader: Reader? = null
             var bufferedReader: BufferedReader? = null
