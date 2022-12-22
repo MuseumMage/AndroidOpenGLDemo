@@ -6,12 +6,13 @@ import java.io.*
 
 class Utils {
     companion object {
-        fun readFile(filename: String, context: Context): String {
+        fun readFile(resid: Int, context: Context): String {
             var inputStream: InputStream? = null
             var reader: Reader? = null
             var bufferedReader: BufferedReader? = null
             try {
-                inputStream = context.resources.assets.open(filename)
+//                inputStream = context.resources.assets.open(filename)
+                inputStream = context.resources.openRawResource(resid)
                 reader = InputStreamReader(inputStream) // 字符流
                 bufferedReader = BufferedReader(reader) //缓冲流
                 val result = StringBuilder()

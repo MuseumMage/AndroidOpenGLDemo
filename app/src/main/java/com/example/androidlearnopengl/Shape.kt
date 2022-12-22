@@ -35,9 +35,9 @@ class Shape {
         private val vertexStride: Int = COORDS_PER_VERTEX * 4 // 4 bytes per vertex
 
         private val vertexShaderCode =
-            Utils.readFile("AndroidDocVertexShader.glsl", OpenGLApplication.context)
+            Utils.readFile(R.raw.android_doc_vertex_shader, OpenGLApplication.context)
         private val fragmentShaderCode =
-            Utils.readFile("AndroidDocFragShader.glsl", OpenGLApplication.context)
+            Utils.readFile(R.raw.android_doc_frag_shader, OpenGLApplication.context)
 
         private var vPMatrixHandle: Int = 0
 
