@@ -11,16 +11,13 @@ import com.example.androidlearnopengl.renderers.AndroidDocRenderer
 
 class AndroidDocFragment : Fragment() {
 
-    private lateinit var gLView: GLSurfaceView
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        gLView = GLSurfaceView(activity).apply {
+    ): View {
+        return GLSurfaceView(activity).apply {
             setEGLContextClientVersion(2)
             setRenderer(AndroidDocRenderer())
         }
-        return gLView
     }
 }

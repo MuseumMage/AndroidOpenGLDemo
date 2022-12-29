@@ -10,13 +10,22 @@
         android:label="ChooseFragment"
         tools:layout="@layout/fragment_choose">
         <action
-            android:id="@+id/action_chooseFragment_to_drawTriangleFragment"
-            app:destination="@id/drawTriangleFragment" />
+            android:id="@+id/action_chooseFragment_to_androidDocFragment"
+            app:destination="@id/androidDocFragment" />
+        <action
+            android:id="@+id/action_chooseFragment_to_helloTriangleFragment"
+            app:destination="@id/helloTriangleFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/drawTriangleFragment"
+        android:id="@+id/androidDocFragment"
         android:name="com.example.androidlearnopengl.fragments.AndroidDocFragment"
         android:label="DrawTriangleFragment"
-        tools:layout="@layout/fragment_draw_triangle"/>
+        tools:layout="@layout/fragment_android_doc"/>
+
+    <fragment
+        android:id="@+id/helloTriangleFragment"
+        android:name="com.example.androidlearnopengl.fragments.HelloTriangleFragment"
+        android:label="fragment_hello_triangle"
+        tools:layout="@layout/fragment_hello_triangle" />
 </navigation>

@@ -32,8 +32,11 @@ class ChooseFragment : Fragment() {
             container,
             false
         )
-        binding.drawTriangleButton.setOnClickListener { view: View ->
-            view.findNavController().navigate(R.id.action_chooseFragment_to_drawTriangleFragment)
+        binding.androidDocButton.setOnClickListener { view: View ->
+            view.findNavController().navigate(R.id.action_chooseFragment_to_androidDocFragment)
+        }
+        binding.helloTriangleButton.setOnClickListener { view: View ->
+            view.findNavController().navigate(R.id.action_chooseFragment_to_helloTriangleFragment)
         }
         return binding.root
     }

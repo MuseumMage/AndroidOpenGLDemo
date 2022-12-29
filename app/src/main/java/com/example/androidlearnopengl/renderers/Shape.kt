@@ -1,6 +1,7 @@
 package com.example.androidlearnopengl.renderers
 
 import android.opengl.GLES20
+import android.util.Log
 import com.example.androidlearnopengl.R
 import com.example.androidlearnopengl.utils.Utils
 import java.nio.ByteBuffer
@@ -62,6 +63,14 @@ class Shape {
 
                 // creates OpenGL ES program executables
                 GLES20.glLinkProgram(it)
+            }
+
+            val linkStatus = IntArray(1)
+            GLES20.glGetProgramiv(mProgram, GLES20.GL_LINK_STATUS, linkStatus, 0)
+            if (linkStatus[0] == 0) {
+                GLES20.glDeleteProgram(mProgram)
+
+                Log.d("zhangbo", "link went wrong ")
             }
         }
 
