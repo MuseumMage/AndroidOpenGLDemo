@@ -1,6 +1,6 @@
 package com.example.androidlearnopengl.renderers
 
-import android.opengl.GLES20
+import android.opengl.GLES30
 import android.opengl.GLSurfaceView
 import android.opengl.Matrix
 import android.os.SystemClock
@@ -18,7 +18,7 @@ class AndroidDocRenderer : GLSurfaceView.Renderer {
     private val viewMatrix = FloatArray(16)
 
     override fun onSurfaceCreated(p0: GL10?, p1: EGLConfig?) {
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
+        GLES30.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
 
         // initialize a triangle
         mTriangle = Shape.Triangle()
@@ -29,7 +29,7 @@ class AndroidDocRenderer : GLSurfaceView.Renderer {
     override fun onDrawFrame(p0: GL10?) {
         val scratch = FloatArray(16)
 
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
+        GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT)
 
         // Set the camera position (View matrix)
         Matrix.setLookAtM(viewMatrix, 0, 0f, 0f, 3f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)
@@ -55,7 +55,7 @@ class AndroidDocRenderer : GLSurfaceView.Renderer {
     }
 
     override fun onSurfaceChanged(p0: GL10?, width: Int, height: Int) {
-        GLES20.glViewport(0, 0, width, height)
+        GLES30.glViewport(0, 0, width, height)
 
         val ratio: Float = width.toFloat() / height.toFloat()
 

@@ -16,7 +16,7 @@ class AndroidDocFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         return GLSurfaceView(activity).apply {
-            setEGLContextClientVersion(2)
+            setEGLContextClientVersion(3)
             setRenderer(AndroidDocRenderer())
         }
     }

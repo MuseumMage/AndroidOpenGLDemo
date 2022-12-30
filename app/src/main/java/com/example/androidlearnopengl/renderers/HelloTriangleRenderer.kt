@@ -1,6 +1,6 @@
 package com.example.androidlearnopengl.renderers
 
-import android.opengl.GLES20
+import android.opengl.GLES30
 import android.opengl.GLSurfaceView
 import android.util.Log
 import com.example.androidlearnopengl.R
@@ -27,7 +27,7 @@ class HelloTriangleRenderer : GLSurfaceView.Renderer {
     private val vertexStride: Int = COORDS_PER_VERTEX * 4 // 4 bytes per vertex
 
     override fun onSurfaceCreated(p0: GL10?, p1: EGLConfig?) {
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
+        GLES30.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
 
         // compile shader
         compileShader()
@@ -36,42 +36,43 @@ class HelloTriangleRenderer : GLSurfaceView.Renderer {
     }
 
     override fun onDrawFrame(p0: GL10?) {
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
+        GLES30.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
         draw()
     }
 
     override fun onSurfaceChanged(p0: GL10?, width: Int, height: Int) {
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
+        GLES30.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
     }
 
     private fun compileShader() {
 
-        val vertexShaderCode = Utils.readFile(R.raw.hello_triangle_vertex)
-        val fragmentShaderCode = Utils.readFile(R.raw.hello_triangle_fragment)
+        val vertexShaderCode = Utils.readStringFromRaw(R.raw.hello_triangle_vertex)
+        val fragmentShaderCode = Utils.readStringFromRaw(R.raw.hello_triangle_fragment)
 
-        val vertexShader: Int = Utils.loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode)
-        val fragmentShader: Int = Utils.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode)
+        val vertexShader: Int = Utils.loadShader(GLES30.GL_VERTEX_SHADER, vertexShaderCode)
+        val fragmentShader: Int = Utils.loadShader(GLES30.GL_FRAGMENT_SHADER, fragmentShaderCode)
 
         // create empty OpenGL ES Program
-        mProgram = GLES20.glCreateProgram().also {
+        mProgram = GLES30.glCreateProgram().also {
 
             // add the vertex shader to program
-            GLES20.glAttachShader(it, vertexShader)
+            GLES30.glAttachShader(it, vertexShader)
 
             // add the fragment shader to program
-            GLES20.glAttachShader(it, fragmentShader)
+            GLES30.glAttachShader(it, fragmentShader)
 
             // creates OpenGL ES program executables
-            GLES20.glLinkProgram(it)
+            GLES30.glLinkProgram(it)
 
         }
 
         // check shader program
         val linkStatus = IntArray(1)
-        GLES20.glGetProgramiv(mProgram, GLES20.GL_LINK_STATUS, linkStatus, 0)
+        GLES30.glGetProgramiv(mProgram, GLES30.GL_LINK_STATUS, linkStatus, 0)
         if (linkStatus[0] == 0) {
-            GLES20.glDeleteProgram(mProgram)
             Log.e("zhangbo", "compileShader: Error")
+            Log.e("zhangbo", GLES30.glGetProgramInfoLog(mProgram))
+            GLES30.glDeleteProgram(mProgram)
             return
         }
     }
@@ -95,29 +96,29 @@ class HelloTriangleRenderer : GLSurfaceView.Renderer {
 
     private fun draw() {
         // Add program to OpenGL ES environment
-        GLES20.glUseProgram(mProgram)
+        GLES30.glUseProgram(mProgram)
 
         // get handle to vertex shader's vPosition member
-        GLES20.glGetAttribLocation(mProgram, "aPos").let {
+        GLES30.glGetAttribLocation(mProgram, "aPos").let {
 
             // Enable a handle to the triangle vertices
-            GLES20.glEnableVertexAttribArray(it)
+            GLES30.glEnableVertexAttribArray(it)
 
             // Prepare the triangle coordinate data
-            GLES20.glVertexAttribPointer(
+            GLES30.glVertexAttribPointer(
                 it,
                 COORDS_PER_VERTEX,
-                GLES20.GL_FLOAT,
+                GLES30.GL_FLOAT,
                 false,
                 vertexStride,
                 vertexBuffer
             )
 
             // Draw the triangle
-            GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount)
+            GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, vertexCount)
 
             // Disable vertex array
-            GLES20.glDisableVertexAttribArray(it)
+            GLES30.glDisableVertexAttribArray(it)
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.example.androidlearnopengl.renderers
 
-import android.opengl.GLES20
+import android.opengl.GLES30
 import android.util.Log
 import com.example.androidlearnopengl.R
 import com.example.androidlearnopengl.utils.Utils
@@ -38,9 +38,9 @@ class Shape {
         private val vertexStride: Int = COORDS_PER_VERTEX * 4 // 4 bytes per vertex
 
         private val vertexShaderCode =
-            Utils.readFile(R.raw.android_doc_vertex_shader)
+            Utils.readStringFromRaw(R.raw.android_doc_vertex_shader)
         private val fragmentShaderCode =
-            Utils.readFile(R.raw.android_doc_frag_shader)
+            Utils.readStringFromRaw(R.raw.android_doc_frag_shader)
 
         private var vPMatrixHandle: Int = 0
 
@@ -49,26 +49,26 @@ class Shape {
 
         init {
 
-            val vertexShader: Int = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode)
-            val fragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode)
+            val vertexShader: Int = loadShader(GLES30.GL_VERTEX_SHADER, vertexShaderCode)
+            val fragmentShader: Int = loadShader(GLES30.GL_FRAGMENT_SHADER, fragmentShaderCode)
 
             // create empty OpenGL ES Program
-            mProgram = GLES20.glCreateProgram().also {
+            mProgram = GLES30.glCreateProgram().also {
 
                 // add the vertex shader to program
-                GLES20.glAttachShader(it, vertexShader)
+                GLES30.glAttachShader(it, vertexShader)
 
                 // add the fragment shader to program
-                GLES20.glAttachShader(it, fragmentShader)
+                GLES30.glAttachShader(it, fragmentShader)
 
                 // creates OpenGL ES program executables
-                GLES20.glLinkProgram(it)
+                GLES30.glLinkProgram(it)
             }
 
             val linkStatus = IntArray(1)
-            GLES20.glGetProgramiv(mProgram, GLES20.GL_LINK_STATUS, linkStatus, 0)
+            GLES30.glGetProgramiv(mProgram, GLES30.GL_LINK_STATUS, linkStatus, 0)
             if (linkStatus[0] == 0) {
-                GLES20.glDeleteProgram(mProgram)
+                GLES30.glDeleteProgram(mProgram)
 
                 Log.d("zhangbo", "link went wrong ")
             }
@@ -91,19 +91,19 @@ class Shape {
 
         fun draw(mvpMatrix: FloatArray) {
             // Add program to OpenGL ES environment
-            GLES20.glUseProgram(mProgram)
+            GLES30.glUseProgram(mProgram)
 
             // get handle to vertex shader's vPosition member
-            positionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition").also {
+            positionHandle = GLES30.glGetAttribLocation(mProgram, "vPosition").also {
 
                 // Enable a handle to the triangle vertices
-                GLES20.glEnableVertexAttribArray(it)
+                GLES30.glEnableVertexAttribArray(it)
 
                 // Prepare the triangle coordinate data
-                GLES20.glVertexAttribPointer(
+                GLES30.glVertexAttribPointer(
                     it,
                     COORDS_PER_VERTEX,
-                    GLES20.GL_FLOAT,
+                    GLES30.GL_FLOAT,
                     false,
                     vertexStride,
                     vertexBuffer
@@ -111,24 +111,24 @@ class Shape {
 
                 // get handle to shape's transformation matrix
                 vPMatrixHandle =
-                    GLES20.glGetUniformLocation(mProgram, "uMVPMatrix").also { matrixHandle ->
+                    GLES30.glGetUniformLocation(mProgram, "uMVPMatrix").also { matrixHandle ->
 
                         // Pass the projection and view transformation to the shader
-                        GLES20.glUniformMatrix4fv(it, 1, false, mvpMatrix, 0)
+                        GLES30.glUniformMatrix4fv(it, 1, false, mvpMatrix, 0)
                     }
 
                 // get handle to fragment shader's vColor member
-                mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor").also { colorHandle ->
+                mColorHandle = GLES30.glGetUniformLocation(mProgram, "vColor").also { colorHandle ->
 
                     // Set color for drawing the triangle
-                    GLES20.glUniform4fv(colorHandle, 1, color, 0)
+                    GLES30.glUniform4fv(colorHandle, 1, color, 0)
                 }
 
                 // Draw the triangle
-                GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount)
+                GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, vertexCount)
 
                 // Disable vertex array
-                GLES20.glDisableVertexAttribArray(it)
+                GLES30.glDisableVertexAttribArray(it)
             }
         }
     }
@@ -163,13 +163,13 @@ class Shape {
     companion object {
         fun loadShader(type: Int, shaderCode: String): Int {
 
-            // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
-            // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
-            return GLES20.glCreateShader(type).also { shader ->
+            // create a vertex shader type (GLES30.GL_VERTEX_SHADER)
+            // or a fragment shader type (GLES30.GL_FRAGMENT_SHADER)
+            return GLES30.glCreateShader(type).also { shader ->
 
                 // add the source code to the shader and compile it
-                GLES20.glShaderSource(shader, shaderCode)
-                GLES20.glCompileShader(shader)
+                GLES30.glShaderSource(shader, shaderCode)
+                GLES30.glCompileShader(shader)
             }
         }
     }
