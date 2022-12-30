@@ -1,7 +1,10 @@
 package com.example.androidlearnopengl.renderers
 
+import android.opengl.GLES20.glGetUniformLocation
+import android.opengl.GLES20.glUniform4f
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
+import android.os.SystemClock
 import android.util.Log
 import com.example.androidlearnopengl.R
 import com.example.androidlearnopengl.utils.Utils
@@ -10,6 +13,8 @@ import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import kotlin.math.sin
+
 
 val vertices = floatArrayOf(     // in counterclockwise order:
     0.0f, 0.5f, 0.0f,      // top
@@ -97,6 +102,13 @@ class HelloTriangleRenderer : GLSurfaceView.Renderer {
     private fun draw() {
         // Add program to OpenGL ES environment
         GLES30.glUseProgram(mProgram)
+
+        // 更新uniform颜色
+        val vertexColorLocation = glGetUniformLocation(mProgram, "ourColor").also {
+            val time = SystemClock.uptimeMillis() / 1000
+            val greenValue: Float = sin(time.toFloat()) / 2.0f + 0.5f
+            glUniform4f(it, 0.0f, greenValue, 0.0f, 1.0f)
+        }
 
         // get handle to vertex shader's vPosition member
         GLES30.glGetAttribLocation(mProgram, "aPos").let {

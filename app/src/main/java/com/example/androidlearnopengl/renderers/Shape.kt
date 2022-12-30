@@ -68,9 +68,8 @@ class Shape {
             val linkStatus = IntArray(1)
             GLES30.glGetProgramiv(mProgram, GLES30.GL_LINK_STATUS, linkStatus, 0)
             if (linkStatus[0] == 0) {
-                GLES30.glDeleteProgram(mProgram)
-
                 Log.d("zhangbo", "link went wrong ")
+                GLES30.glDeleteProgram(mProgram)
             }
         }
 
