@@ -1,10 +1,7 @@
 package com.example.androidlearnopengl.renderers
 
-import android.opengl.GLES20.glGetUniformLocation
-import android.opengl.GLES20.glUniform4f
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
-import android.os.SystemClock
 import android.util.Log
 import com.example.androidlearnopengl.R
 import com.example.androidlearnopengl.utils.Utils
@@ -13,23 +10,24 @@ import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
-import kotlin.math.sin
 
 
 val vertices = floatArrayOf(     // in counterclockwise order:
-    0.0f, 0.5f, 0.0f,      // top
-    -0.5f, -0.5f, 0.0f,    // bottom left
-    0.5f, -0.5f, 0.0f      // bottom right
+    // positions         // colors
+    0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // bottom right
+    -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,  // bottom left
+    0.0f, 0.5f, 0.0f,   0.0f, 0.0f, 1.0f   // top
 )
 
+const val COORDS_PER_VERTEX1 = 6 // 与vertices数据类相关
 
 class HelloTriangleRenderer : GLSurfaceView.Renderer {
 
     private lateinit var vertexBuffer: FloatBuffer
     private var mProgram: Int = -1
 
-    private val vertexCount: Int = vertices.size / COORDS_PER_VERTEX
-    private val vertexStride: Int = COORDS_PER_VERTEX * 4 // 4 bytes per vertex
+    private val vertexCount: Int = vertices.size /COORDS_PER_VERTEX1
+    private val stride: Int = COORDS_PER_VERTEX1 * Float.SIZE_BYTES // 4 bytes per vertex
 
     override fun onSurfaceCreated(p0: GL10?, p1: EGLConfig?) {
         GLES30.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
@@ -38,6 +36,8 @@ class HelloTriangleRenderer : GLSurfaceView.Renderer {
         compileShader()
         // create byte buffer
         initVertexBuffer()
+        // init env
+        initEnv()
     }
 
     override fun onDrawFrame(p0: GL10?) {
@@ -85,7 +85,7 @@ class HelloTriangleRenderer : GLSurfaceView.Renderer {
     private fun initVertexBuffer() {
         vertexBuffer =
                 // (number of coordinate values * 4 bytes per float)
-            ByteBuffer.allocateDirect(vertices.size * 4).run {
+            ByteBuffer.allocateDirect(vertices.size * Float.SIZE_BYTES).run {
                 // use the device hardware's native byte order
                 order(ByteOrder.nativeOrder())
 
@@ -94,43 +94,44 @@ class HelloTriangleRenderer : GLSurfaceView.Renderer {
                     // add the coordinates to the FloatBuffer
                     put(vertices)
                     // set the buffer to read the first coordinate
-                    position(0)
+                    //position(0)
                 }
             }
     }
 
-    private fun draw() {
+    private fun initEnv() {
         // Add program to OpenGL ES environment
         GLES30.glUseProgram(mProgram)
 
-        // 更新uniform颜色
-        val vertexColorLocation = glGetUniformLocation(mProgram, "ourColor").also {
-            val time = SystemClock.uptimeMillis() / 1000
-            val greenValue: Float = sin(time.toFloat()) / 2.0f + 0.5f
-            glUniform4f(it, 0.0f, greenValue, 0.0f, 1.0f)
-        }
+        vertexBuffer.position(0)
+        val posHandle = GLES30.glGetAttribLocation(mProgram, "aPos")
+        GLES30.glVertexAttribPointer(
+            posHandle,
+            COORDS_PER_VERTEX,
+            GLES30.GL_FLOAT,
+            false,
+            stride,
+            vertexBuffer
+        )
+        GLES30.glEnableVertexAttribArray(posHandle)
 
-        // get handle to vertex shader's vPosition member
-        GLES30.glGetAttribLocation(mProgram, "aPos").let {
+        vertexBuffer.position(3)
+        val colorHandle = GLES30.glGetAttribLocation(mProgram, "aColor")
+        GLES30.glVertexAttribPointer(
+            colorHandle,
+            COORDS_PER_VERTEX,
+            GLES30.GL_FLOAT,
+            false,
+            stride,
+            vertexBuffer
+        )
+        GLES30.glEnableVertexAttribArray(colorHandle)
+    }
 
-            // Enable a handle to the triangle vertices
-            GLES30.glEnableVertexAttribArray(it)
+    private fun draw() {
+        GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, vertexCount)
 
-            // Prepare the triangle coordinate data
-            GLES30.glVertexAttribPointer(
-                it,
-                COORDS_PER_VERTEX,
-                GLES30.GL_FLOAT,
-                false,
-                vertexStride,
-                vertexBuffer
-            )
-
-            // Draw the triangle
-            GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, vertexCount)
-
-            // Disable vertex array
-            GLES30.glDisableVertexAttribArray(it)
-        }
+//        GLES30.glDisableVertexAttribArray(posHandle)
+//        GLES30.glDisableVertexAttribArray(colorHandle)
     }
 }
