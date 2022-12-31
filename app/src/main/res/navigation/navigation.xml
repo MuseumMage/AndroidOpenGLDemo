@@ -15,6 +15,9 @@
         <action
             android:id="@+id/action_chooseFragment_to_helloTriangleFragment"
             app:destination="@id/helloTriangleFragment" />
+        <action
+            android:id="@+id/action_chooseFragment_to_textureFragment"
+            app:destination="@id/textureFragment" />
     </fragment>
 
     <fragment
@@ -28,4 +31,9 @@
         android:name="com.example.androidlearnopengl.fragments.HelloTriangleFragment"
         android:label="fragment_hello_triangle"
         tools:layout="@layout/fragment_hello_triangle" />
+    <fragment
+        android:id="@+id/textureFragment"
+        android:name="com.example.androidlearnopengl.fragments.TextureFragment"
+        android:label="fragment_texture"
+        tools:layout="@layout/fragment_texture" />
 </navigation>

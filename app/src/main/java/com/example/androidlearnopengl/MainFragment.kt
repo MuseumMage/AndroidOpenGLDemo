@@ -38,6 +38,10 @@ class ChooseFragment : Fragment() {
         binding.helloTriangleButton.setOnClickListener { view: View ->
             view.findNavController().navigate(R.id.action_chooseFragment_to_helloTriangleFragment)
         }
+        binding.textureButton.setOnClickListener{ view: View ->
+            view.findNavController().navigate(R.id.action_chooseFragment_to_textureFragment)
+        }
+
         return binding.root
     }
 }
