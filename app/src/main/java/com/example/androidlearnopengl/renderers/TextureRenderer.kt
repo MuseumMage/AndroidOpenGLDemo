@@ -30,7 +30,8 @@ class TextureRenderer : GLSurfaceView.Renderer  {
     private lateinit var mShader: MyShader
     private lateinit var vertexBuffer: FloatBuffer
     private lateinit var indicesBuffer: ByteBuffer
-    private var mTexture: Int = 0
+    private var mTexture1: Int = 0
+    private var mTexture2: Int = 0
 
     private val stride: Int = COORDS_PER_VERTEX_TEXTURE * Float.SIZE_BYTES // 4 bytes per vertex
 
@@ -49,10 +50,9 @@ class TextureRenderer : GLSurfaceView.Renderer  {
         GLES30.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
         // bind Texture
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0)
-        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, mTexture)
-        val textureShader = GLES30.glGetUniformLocation(mShader.getProgram(), "ourTexture").also {
-            GLES30.glUniform1i(it, 0)
-        }
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, mTexture1)
+        GLES30.glActiveTexture(GLES30.GL_TEXTURE1)
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, mTexture2)
 
         GLES30.glDrawElements(GL10.GL_TRIANGLES, indices.size, GL10.GL_UNSIGNED_BYTE, indicesBuffer);
     }
@@ -128,9 +128,14 @@ class TextureRenderer : GLSurfaceView.Renderer  {
             )
             GLES30.glEnableVertexAttribArray(it)
         }
+
+        // set different texture
+        mShader.setInt("texture1", 0)
+        mShader.setInt("texture2", 1)
     }
 
     private fun initTexture() {
-        mTexture = Utils.loadTexture(R.drawable.container)
+        mTexture1 = Utils.loadTexture(R.drawable.container)
+        mTexture2 = Utils.loadTexture(R.drawable.awesomeface)
     }
 }
