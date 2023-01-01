@@ -6,6 +6,7 @@ import android.opengl.GLES30
 import android.util.Log
 import androidx.annotation.RawRes
 import com.example.androidlearnopengl.OpenGLApplication
+import com.example.androidlearnopengl.utils.Utils
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -16,8 +17,8 @@ class MyShader(private val vertexShaderID:Int, private val fragShaderID:Int) {
     private var programID:Int = 0
 
     init {
-        val vertexShader = compileShader(GLES30.GL_VERTEX_SHADER, readStringFromRaw(vertexShaderID))
-        val fragmentShader = compileShader(GLES30.GL_FRAGMENT_SHADER, readStringFromRaw(fragShaderID))
+        val vertexShader = compileShader(GLES30.GL_VERTEX_SHADER, Utils.readStringFromRaw(vertexShaderID))
+        val fragmentShader = compileShader(GLES30.GL_FRAGMENT_SHADER, Utils.readStringFromRaw(fragShaderID))
         // create empty OpenGL ES Program
         programID = GLES30.glCreateProgram().also {
 
@@ -64,32 +65,6 @@ class MyShader(private val vertexShaderID:Int, private val fragShaderID:Int) {
     fun setFloat(name: String, value:Float)
     {
         GLES30.glUniform1f(glGetUniformLocation(programID, name), value)
-    }
-
-
-    private fun readStringFromRaw(@RawRes resId:Int): String {
-        return runCatching{
-            val builder=StringBuilder()
-            val reader= BufferedReader(InputStreamReader(OpenGLApplication.context.resources.openRawResource(resId)))//InputStreamReader它使用指定的字符集读取字节并将它们解码为字符//InputStream openRawResource(int id) 获取资源的数据流，读取资源数据
-            var nextLine: String?=reader.readLine()
-            while (nextLine !=null){
-                builder.append(nextLine).append("\n")
-                nextLine=reader.readLine()
-            }
-            reader.close()
-            builder.toString()
-
-        }.onFailure {
-            when(it){
-                is IOException ->{
-                    throw RuntimeException("Could not open resource: $resId",it)
-                }
-                is Resources.NotFoundException ->{
-                    throw RuntimeException("Resource not found: $resId",it)
-                }
-                else ->{}
-            }
-        }.getOrThrow()//如果此实例表示成功，则返回封装的值;如果实例失败，则引发封装的 Throwable 异常
     }
 
     private fun compileShader(type: Int, shaderCode: String): Int {
