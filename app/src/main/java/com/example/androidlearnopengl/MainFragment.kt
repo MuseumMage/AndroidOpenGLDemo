@@ -41,6 +41,9 @@ class ChooseFragment : Fragment() {
         binding.textureButton.setOnClickListener{ view: View ->
             view.findNavController().navigate(R.id.action_chooseFragment_to_textureFragment)
         }
+        binding.transformButton.setOnClickListener{ view: View ->
+            view.findNavController().navigate(R.id.action_chooseFragment_to_transformFragment)
+        }
 
         return binding.root
     }

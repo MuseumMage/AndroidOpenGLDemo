@@ -13,6 +13,9 @@ import java.io.InputStreamReader
 
 
 class MyShader(private val vertexShaderID:Int, private val fragShaderID:Int) {
+
+    private val TAG = "MyShader"
+
     // 程序ID
     private var programID:Int = 0
 
@@ -53,18 +56,43 @@ class MyShader(private val vertexShaderID:Int, private val fragShaderID:Int) {
     }
 
     fun setBool(name: String, value: Boolean) {
-        GLES30.glUniform1i(glGetUniformLocation(programID, name), value.toInt())
+        val handle = glGetUniformLocation(programID, name)
+        if (handle == -1) {
+            Log.e(TAG, "setBool: cannot find $name")
+            return
+        }
+        GLES30.glUniform1i(handle, value.toInt())
     }
     private fun Boolean.toInt() = if (this) 1 else 0
 
     fun setInt(name: String, value:Int)
     {
-        GLES30.glUniform1i(glGetUniformLocation(programID, name), value)
+        val handle = glGetUniformLocation(programID, name)
+        if (handle == -1) {
+            Log.e(TAG, "setInt: cannot find $name")
+            return
+        }
+        GLES30.glUniform1i(handle, value)
     }
 
     fun setFloat(name: String, value:Float)
     {
-        GLES30.glUniform1f(glGetUniformLocation(programID, name), value)
+        val handle = glGetUniformLocation(programID, name)
+        if (handle == -1) {
+            Log.e(TAG, "setFloat: cannot find $name")
+            return
+        }
+        GLES30.glUniform1f(handle, value)
+    }
+
+    fun setMatrix(name: String, value:FloatArray)
+    {
+        val handle = glGetUniformLocation(programID, name)
+        if (handle == -1) {
+            Log.e(TAG, "setMatrix: cannot find $name")
+            return
+        }
+        GLES30.glUniformMatrix4fv(handle, 1, false, value, 0)
     }
 
     private fun compileShader(type: Int, shaderCode: String): Int {

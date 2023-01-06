@@ -18,6 +18,9 @@
         <action
             android:id="@+id/action_chooseFragment_to_textureFragment"
             app:destination="@id/textureFragment" />
+        <action
+            android:id="@+id/action_chooseFragment_to_transformFragment"
+            app:destination="@id/transformFragment" />
     </fragment>
 
     <fragment
@@ -36,4 +39,9 @@
         android:name="com.example.androidlearnopengl.fragments.TextureFragment"
         android:label="fragment_texture"
         tools:layout="@layout/fragment_texture" />
+    <fragment
+        android:id="@+id/transformFragment"
+        android:name="com.example.androidlearnopengl.fragments.TransformFragment"
+        android:label="fragment_transform"
+        tools:layout="@layout/fragment_transform" />
 </navigation>
