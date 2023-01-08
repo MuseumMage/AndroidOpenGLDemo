@@ -56,43 +56,47 @@ class MyShader(private val vertexShaderID:Int, private val fragShaderID:Int) {
     }
 
     fun setBool(name: String, value: Boolean) {
-        val handle = glGetUniformLocation(programID, name)
-        if (handle == -1) {
-            Log.e(TAG, "setBool: cannot find $name")
-            return
+        val handle = glGetUniformLocation(programID, name).also {
+            if (it == -1) {
+                Log.e(TAG, "setBool: cannot find $name")
+                return
+            }
+            GLES30.glUniform1i(it, value.toInt())
         }
-        GLES30.glUniform1i(handle, value.toInt())
     }
     private fun Boolean.toInt() = if (this) 1 else 0
 
     fun setInt(name: String, value:Int)
     {
-        val handle = glGetUniformLocation(programID, name)
-        if (handle == -1) {
-            Log.e(TAG, "setInt: cannot find $name")
-            return
+        val handle = glGetUniformLocation(programID, name).also {
+            if (it == -1) {
+                Log.e(TAG, "setInt: cannot find $name")
+                return
+            }
+            GLES30.glUniform1i(it, value)
         }
-        GLES30.glUniform1i(handle, value)
     }
 
     fun setFloat(name: String, value:Float)
     {
-        val handle = glGetUniformLocation(programID, name)
-        if (handle == -1) {
-            Log.e(TAG, "setFloat: cannot find $name")
-            return
+        val handle = glGetUniformLocation(programID, name).also {
+            if (it == -1) {
+                Log.e(TAG, "setFloat: cannot find $name")
+                return
+            }
+            GLES30.glUniform1f(it, value)
         }
-        GLES30.glUniform1f(handle, value)
     }
 
     fun setMatrix(name: String, value:FloatArray)
     {
-        val handle = glGetUniformLocation(programID, name)
-        if (handle == -1) {
-            Log.e(TAG, "setMatrix: cannot find $name")
-            return
+        val handle = glGetUniformLocation(programID, name).also {
+            if (it == -1) {
+                Log.e(TAG, "setMatrix: cannot find $name")
+                return
+            }
+            GLES30.glUniformMatrix4fv(it, 1, false, value, 0)
         }
-        GLES30.glUniformMatrix4fv(handle, 1, false, value, 0)
     }
 
     private fun compileShader(type: Int, shaderCode: String): Int {
