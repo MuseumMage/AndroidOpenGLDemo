@@ -4,6 +4,7 @@ import android.opengl.GLES30
 import android.opengl.GLSurfaceView
 import android.opengl.Matrix
 import android.os.SystemClock
+import androidx.core.graphics.rotationMatrix
 import com.example.androidlearnopengl.R
 import com.example.androidlearnopengl.utils.Utils
 import java.nio.ByteBuffer
@@ -62,6 +63,19 @@ val verticesTransform = floatArrayOf(     // in counterclockwise order:
 //    1, 2, 3  // second triangle
 //)
 
+val cubePositions = arrayListOf(
+    floatArrayOf( 0.0f,  0.0f,  0.0f),
+    floatArrayOf( 2.0f,  5.0f, -15.0f),
+    floatArrayOf(-1.5f, -2.2f, -2.5f),
+    floatArrayOf(-3.8f, -2.0f, -12.3f),
+    floatArrayOf( 2.4f, -0.4f, -3.5f),
+    floatArrayOf(-1.7f,  3.0f, -7.5f),
+    floatArrayOf( 1.3f, -2.0f, -2.5f),
+    floatArrayOf( 1.5f,  2.0f, -2.5f),
+    floatArrayOf( 1.5f,  0.2f, -1.5f),
+    floatArrayOf(-1.3f,  1.0f, -1.5f)
+)
+
 const val COORDS_PER_VERTEX_TRANSFORM = 5 // 与vertices数据类相关
 
 class TransformRenderer : GLSurfaceView.Renderer {
@@ -108,11 +122,12 @@ class TransformRenderer : GLSurfaceView.Renderer {
 //        Matrix.rotateM(transform, 0, transform, 0, angle, 0.0f, 0.0f, 1.0f)
 
         // MVP Matrix
-        val modelMatrix = FloatArray(16).also {
-            val time = SystemClock.uptimeMillis() % 4000L
-            val angle = 0.090f * time.toInt()
-            Matrix.setRotateM(it, 0, angle, 0.5f, 1.0f, 0.0f)
-        }
+//        val modelMatrix = FloatArray(16).also {
+//            val time = SystemClock.uptimeMillis() % 4000L
+//            val angle = 0.090f * time.toInt()
+//            Matrix.setRotateM(it, 0, angle, 0.5f, 1.0f, 0.0f)
+//        }
+        val modelMatrix = FloatArray(16)
         val viewMatrix = FloatArray(16).also {
             Matrix.setIdentityM(it,0)
             Matrix.translateM(it, 0, 0.0f, 0.0f, -3.0f)
@@ -123,11 +138,20 @@ class TransformRenderer : GLSurfaceView.Renderer {
 
         // set transform
 //        mShader.setMatrix("transform", transform)
-        mShader.setMatrix("model", modelMatrix)
+//        mShader.setMatrix("model", modelMatrix)
         mShader.setMatrix("view", viewMatrix)
         mShader.setMatrix("projection", projectionMatrix)
 
-        GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, vertexCount)
+        // draw 10 cubes
+        for ((index, cube) in cubePositions.withIndex()) {
+            Matrix.setIdentityM(modelMatrix, 0)
+            Matrix.translateM(modelMatrix, 0, cube[0], cube[1], cube[2])
+
+            val angle = 20.0f * index
+            Matrix.rotateM(modelMatrix, 0, modelMatrix, 0, angle, 1.0f, 0.3f, 0.5f)
+            mShader.setMatrix("model", modelMatrix)
+            GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, vertexCount)
+        }
 //        GLES30.glDrawElements(GL10.GL_TRIANGLES, indicesTransform.size, GL10.GL_UNSIGNED_BYTE, indicesBuffer);
     }
 
