@@ -13,25 +13,63 @@ import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
 val verticesTransform = floatArrayOf(     // in counterclockwise order:
-    // positions          // colors           // texture coords
-    0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, // top right
-    0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, // bottom right
-    -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, // bottom left
-    -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f  // top left
+    // positions          // texture coords
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+    0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+    0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+    0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+    0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+    0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+    0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+    0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+    0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 )
 
-val indicesTransform = byteArrayOf(
-    0, 1, 3, // first triangle
-    1, 2, 3  // second triangle
-)
+//val indicesTransform = byteArrayOf(
+//    0, 1, 3, // first triangle
+//    1, 2, 3  // second triangle
+//)
 
-const val COORDS_PER_VERTEX_TRANSFORM = 8 // 与vertices数据类相关
+const val COORDS_PER_VERTEX_TRANSFORM = 5 // 与vertices数据类相关
 
 class TransformRenderer : GLSurfaceView.Renderer {
 
     private lateinit var mShader: MyShader
     private lateinit var vertexBuffer: FloatBuffer
-    private lateinit var indicesBuffer: ByteBuffer
+    //private lateinit var indicesBuffer: ByteBuffer
+    private val vertexCount: Int = verticesTransform.size / COORDS_PER_VERTEX_TRANSFORM
     private var mRatio: Float = 0.0f
     private var mTexture1: Int = 0
     private var mTexture2: Int = 0
@@ -68,7 +106,9 @@ class TransformRenderer : GLSurfaceView.Renderer {
 
         // MVP Matrix
         val modelMatrix = FloatArray(16).also {
-            Matrix.setRotateM(it, 0, -55.0f, 1.0f, 0.0f, 0.0f)
+            val time = SystemClock.uptimeMillis() % 4000L
+            val angle = 0.090f * time.toInt()
+            Matrix.setRotateM(it, 0, angle, 0.5f, 1.0f, 0.0f)
         }
         val viewMatrix = FloatArray(16).also {
             Matrix.setIdentityM(it,0)
@@ -84,7 +124,8 @@ class TransformRenderer : GLSurfaceView.Renderer {
         mShader.setMatrix("view", viewMatrix)
         mShader.setMatrix("projection", projectionMatrix)
 
-        GLES30.glDrawElements(GL10.GL_TRIANGLES, indicesTransform.size, GL10.GL_UNSIGNED_BYTE, indicesBuffer);
+        GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, vertexCount)
+//        GLES30.glDrawElements(GL10.GL_TRIANGLES, indicesTransform.size, GL10.GL_UNSIGNED_BYTE, indicesBuffer);
     }
 
     override fun onSurfaceChanged(p0: GL10?, width: Int, height: Int) {
@@ -109,12 +150,12 @@ class TransformRenderer : GLSurfaceView.Renderer {
                 }
             }
 
-        indicesBuffer =
-            ByteBuffer.allocateDirect(indicesTransform.size).run {
-                order(ByteOrder.nativeOrder())
-                put(indicesTransform)
-                position(0) as ByteBuffer
-            }
+//        indicesBuffer =
+//            ByteBuffer.allocateDirect(indicesTransform.size).run {
+//                order(ByteOrder.nativeOrder())
+//                put(indicesTransform)
+//                position(0) as ByteBuffer
+//            }
     }
 
     private fun initEnv() {
@@ -135,21 +176,8 @@ class TransformRenderer : GLSurfaceView.Renderer {
             GLES30.glEnableVertexAttribArray(it)
         }
 
-        val colorHandle = GLES30.glGetAttribLocation(mShader.getProgram(), "aColor").also {
-            vertexBuffer.position(3)
-            GLES30.glVertexAttribPointer(
-                it,
-                COORDS_PER_VERTEX,
-                GLES30.GL_FLOAT,
-                false,
-                stride,
-                vertexBuffer
-            )
-            GLES30.glEnableVertexAttribArray(it)
-        }
-
         val textureHandle = GLES30.glGetAttribLocation(mShader.getProgram(), "aTexCoord").also {
-            vertexBuffer.position(6)
+            vertexBuffer.position(3)
             GLES30.glVertexAttribPointer(
                 it,
                 COORDS_PER_VERTEX,
