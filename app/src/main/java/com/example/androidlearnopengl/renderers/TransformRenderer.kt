@@ -85,11 +85,14 @@ class TransformRenderer : GLSurfaceView.Renderer {
         initTexture()
         // init env
         initEnv()
+        // Depth Testing
+        GLES30.glEnable(GLES30.GL_DEPTH_TEST)
     }
 
     override fun onDrawFrame(p0: GL10?) {
         GLES30.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT)
+        GLES30.glClear(GLES30.GL_DEPTH_BUFFER_BIT)
         // bind Texture
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0)
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, mTexture1)
