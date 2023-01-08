@@ -32,6 +32,7 @@ class TransformRenderer : GLSurfaceView.Renderer {
     private lateinit var mShader: MyShader
     private lateinit var vertexBuffer: FloatBuffer
     private lateinit var indicesBuffer: ByteBuffer
+    private var mRatio: Float = 0.0f
     private var mTexture1: Int = 0
     private var mTexture2: Int = 0
 
@@ -57,22 +58,38 @@ class TransformRenderer : GLSurfaceView.Renderer {
         GLES30.glActiveTexture(GLES30.GL_TEXTURE1)
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, mTexture2)
 
-        // transform
-        val transform = FloatArray(16)
-        Matrix.setIdentityM(transform, 0)
-        Matrix.translateM(transform, 0, transform, 0, 0.5f, -0.5f, 0.0f)
-        val time = SystemClock.uptimeMillis() % 4000L
-        val angle = 0.090f * time.toInt()
-        Matrix.rotateM(transform, 0, transform, 0, angle, 0.0f, 0.0f, 1.0f)
+        // transform chapter
+//        val transform = FloatArray(16)
+//        Matrix.setIdentityM(transform, 0)
+//        Matrix.translateM(transform, 0, transform, 0, 0.5f, -0.5f, 0.0f)
+//        val time = SystemClock.uptimeMillis() % 4000L
+//        val angle = 0.090f * time.toInt()
+//        Matrix.rotateM(transform, 0, transform, 0, angle, 0.0f, 0.0f, 1.0f)
+
+        // MVP Matrix
+        val modelMatrix = FloatArray(16).also {
+            Matrix.setRotateM(it, 0, -55.0f, 1.0f, 0.0f, 0.0f)
+        }
+        val viewMatrix = FloatArray(16).also {
+            Matrix.setIdentityM(it,0)
+            Matrix.translateM(it, 0, 0.0f, 0.0f, -3.0f)
+        }
+        val projectionMatrix = FloatArray(16).also {
+            Matrix.perspectiveM(it, 0, 45.0f, mRatio, 0.1f, 100.0f)
+        }
 
         // set transform
-        mShader.setMatrix("transform", transform)
+//        mShader.setMatrix("transform", transform)
+        mShader.setMatrix("model", modelMatrix)
+        mShader.setMatrix("view", viewMatrix)
+        mShader.setMatrix("projection", projectionMatrix)
 
         GLES30.glDrawElements(GL10.GL_TRIANGLES, indicesTransform.size, GL10.GL_UNSIGNED_BYTE, indicesBuffer);
     }
 
     override fun onSurfaceChanged(p0: GL10?, width: Int, height: Int) {
         GLES30.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
+        mRatio = width.toFloat() / height.toFloat()
     }
 
 
