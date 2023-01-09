@@ -12,6 +12,8 @@ import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import kotlin.math.cos
+import kotlin.math.sin
 
 val verticesTransform = floatArrayOf(     // in counterclockwise order:
     // positions          // texture coords
@@ -128,9 +130,14 @@ class TransformRenderer : GLSurfaceView.Renderer {
 //            Matrix.setRotateM(it, 0, angle, 0.5f, 1.0f, 0.0f)
 //        }
         val modelMatrix = FloatArray(16)
+        // set cam view
         val viewMatrix = FloatArray(16).also {
-            Matrix.setIdentityM(it,0)
-            Matrix.translateM(it, 0, 0.0f, 0.0f, -3.0f)
+//            Matrix.setIdentityM(it,0)
+//            Matrix.translateM(it, 0, 0.0f, 0.0f, -3.0f)
+            val time = SystemClock.uptimeMillis() % 4000L * 0.00090f
+            val camX = sin(time) * 10f
+            val camZ = cos(time) * 10f
+            Matrix.setLookAtM(it, 0, camX, 0.0f, camZ, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f)
         }
         val projectionMatrix = FloatArray(16).also {
             Matrix.perspectiveM(it, 0, 45.0f, mRatio, 0.1f, 100.0f)
