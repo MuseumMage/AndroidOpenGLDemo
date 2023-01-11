@@ -28,12 +28,15 @@ class TransformFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private lateinit var mRender: TransformRenderer
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        mRender = TransformRenderer()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -44,10 +47,11 @@ class TransformFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = GLSurfaceView(activity).apply {
             setEGLContextClientVersion(3)
-            setRenderer(TransformRenderer())
+            setRenderer(mRender)
             setOnTouchListener { v, event ->
                 if (event?.action == MotionEvent.ACTION_MOVE) {
                     Log.d("zhangbo", "move")
+                    // todo 添加mRender.updateValue
                 }
                 true
             }
