@@ -1,9 +1,12 @@
 package com.example.androidlearnopengl.fragments
 
+import android.annotation.SuppressLint
 import android.opengl.GLSurfaceView
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import com.example.androidlearnopengl.R
@@ -33,15 +36,23 @@ class TransformFragment : Fragment() {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return GLSurfaceView(activity).apply {
+        val view = GLSurfaceView(activity).apply {
             setEGLContextClientVersion(3)
             setRenderer(TransformRenderer())
+            setOnTouchListener { v, event ->
+                if (event?.action == MotionEvent.ACTION_MOVE) {
+                    Log.d("zhangbo", "move")
+                }
+                true
+            }
         }
+        return view
     }
 
     companion object {

@@ -4,6 +4,7 @@ import android.opengl.GLES30
 import android.opengl.GLSurfaceView
 import android.opengl.Matrix
 import android.os.SystemClock
+import android.view.MotionEvent
 import androidx.core.graphics.rotationMatrix
 import com.example.androidlearnopengl.R
 import com.example.androidlearnopengl.utils.Utils
@@ -134,10 +135,10 @@ class TransformRenderer : GLSurfaceView.Renderer {
         val viewMatrix = FloatArray(16).also {
 //            Matrix.setIdentityM(it,0)
 //            Matrix.translateM(it, 0, 0.0f, 0.0f, -3.0f)
-            val time = SystemClock.uptimeMillis() % 4000L * 0.00090f
-            val camX = sin(time) * 10f
-            val camZ = cos(time) * 10f
-            Matrix.setLookAtM(it, 0, camX, 0.0f, camZ, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f)
+//            val time = SystemClock.uptimeMillis() % 4000L * 0.00090f
+//            val camX = sin(time) * 10f
+//            val camZ = cos(time) * 10f
+            Matrix.setLookAtM(it, 0, 0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f)
         }
         val projectionMatrix = FloatArray(16).also {
             Matrix.perspectiveM(it, 0, 45.0f, mRatio, 0.1f, 100.0f)
@@ -232,5 +233,4 @@ class TransformRenderer : GLSurfaceView.Renderer {
         mTexture1 = Utils.loadTexture(R.drawable.container)
         mTexture2 = Utils.loadTexture(R.drawable.awesomeface)
     }
-
 }
