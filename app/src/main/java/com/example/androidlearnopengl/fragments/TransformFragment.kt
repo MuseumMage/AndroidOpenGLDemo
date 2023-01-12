@@ -30,6 +30,9 @@ class TransformFragment : Fragment() {
 
     private lateinit var mRender: TransformRenderer
 
+    private var mOldX: Float = 0.0f
+    private var mOldY: Float = 0.0f
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -50,8 +53,18 @@ class TransformFragment : Fragment() {
             setRenderer(mRender)
             setOnTouchListener { v, event ->
                 if (event?.action == MotionEvent.ACTION_MOVE) {
-                    Log.d("zhangbo", "move")
-                    // todo 添加mRender.updateValue
+                    //Log.d("zhangbo", "moveMove x: ${event.x}, y: ${event.y}")
+//                    mRender.setTouchLoc(event.x, event.y)
+                    mRender.setDeltaLoc(event.x - mOldX, event.y - mOldY)
+                }
+                if (event?.action == MotionEvent.ACTION_DOWN) {
+//                    Log.d("zhangbo", "moveDown x: ${event.x}, y: ${event.y}")
+                    mOldX = event.x
+                    mOldY = event.y
+                }
+                if (event?.action == MotionEvent.ACTION_UP) {
+//                    Log.d("zhangbo", "moveUp x: ${event.x}, y: ${event.y}")
+                    mRender.updateCamPos()
                 }
                 true
             }

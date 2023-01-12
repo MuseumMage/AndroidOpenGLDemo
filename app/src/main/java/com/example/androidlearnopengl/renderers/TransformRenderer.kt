@@ -3,9 +3,7 @@ package com.example.androidlearnopengl.renderers
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
 import android.opengl.Matrix
-import android.os.SystemClock
-import android.view.MotionEvent
-import androidx.core.graphics.rotationMatrix
+import android.util.Log
 import com.example.androidlearnopengl.R
 import com.example.androidlearnopengl.utils.Utils
 import java.nio.ByteBuffer
@@ -13,52 +11,50 @@ import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
-import kotlin.math.cos
-import kotlin.math.sin
 
 val verticesTransform = floatArrayOf(     // in counterclockwise order:
     // positions          // texture coords
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-    0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-    0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+    0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
+    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
 
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-    0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-    0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+    0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+    0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+    0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+    -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
+    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
 
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+    -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+    -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
 
-    0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+    0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+    0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+    0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
 
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-    0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-    0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+    0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
+    0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+    0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
 
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-    0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+    -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
+    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
 )
 
 //val indicesTransform = byteArrayOf(
@@ -67,16 +63,16 @@ val verticesTransform = floatArrayOf(     // in counterclockwise order:
 //)
 
 val cubePositions = arrayListOf(
-    floatArrayOf( 0.0f,  0.0f,  0.0f),
-    floatArrayOf( 2.0f,  5.0f, -15.0f),
+    floatArrayOf(0.0f, 0.0f, 0.0f),
+    floatArrayOf(2.0f, 5.0f, -15.0f),
     floatArrayOf(-1.5f, -2.2f, -2.5f),
     floatArrayOf(-3.8f, -2.0f, -12.3f),
-    floatArrayOf( 2.4f, -0.4f, -3.5f),
-    floatArrayOf(-1.7f,  3.0f, -7.5f),
-    floatArrayOf( 1.3f, -2.0f, -2.5f),
-    floatArrayOf( 1.5f,  2.0f, -2.5f),
-    floatArrayOf( 1.5f,  0.2f, -1.5f),
-    floatArrayOf(-1.3f,  1.0f, -1.5f)
+    floatArrayOf(2.4f, -0.4f, -3.5f),
+    floatArrayOf(-1.7f, 3.0f, -7.5f),
+    floatArrayOf(1.3f, -2.0f, -2.5f),
+    floatArrayOf(1.5f, 2.0f, -2.5f),
+    floatArrayOf(1.5f, 0.2f, -1.5f),
+    floatArrayOf(-1.3f, 1.0f, -1.5f)
 )
 
 const val COORDS_PER_VERTEX_TRANSFORM = 5 // 与vertices数据类相关
@@ -85,11 +81,20 @@ class TransformRenderer : GLSurfaceView.Renderer {
 
     private lateinit var mShader: MyShader
     private lateinit var vertexBuffer: FloatBuffer
+
     //private lateinit var indicesBuffer: ByteBuffer
     private val vertexCount: Int = verticesTransform.size / COORDS_PER_VERTEX_TRANSFORM
     private var mRatio: Float = 0.0f
+    private var mWidth: Float = 0.0f
+    private var mHeight: Float = 0.0f
     private var mTexture1: Int = 0
     private var mTexture2: Int = 0
+    private var mX: Float = 0.0f
+    private var mY: Float = 0.0f
+    private var mDeltaX: Float = 0.0f
+    private var mDeltaY: Float = 0.0f
+    private var mCamPos: FloatArray = floatArrayOf(0.0f, 0.0f, 3.0f)
+    private var mCamPosPre: FloatArray = floatArrayOf(0.0f, 0.0f, 3.0f)
 
     private val stride: Int = COORDS_PER_VERTEX_TRANSFORM * Float.SIZE_BYTES // 4 bytes per vertex
 
@@ -138,7 +143,18 @@ class TransformRenderer : GLSurfaceView.Renderer {
 //            val time = SystemClock.uptimeMillis() % 4000L * 0.00090f
 //            val camX = sin(time) * 10f
 //            val camZ = cos(time) * 10f
-            Matrix.setLookAtM(it, 0, 0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f)
+            val transX = mDeltaX / mWidth / 2
+            val transY = -mDeltaY / mHeight / 2
+
+            val cameraPos = floatArrayOf(mCamPos[0] - transX, mCamPos[1] - transY, 0.0f)
+            val cameraFront = floatArrayOf(0.0f, 0.0f, -1.0f)
+            val cameraUp = floatArrayOf(0.0f, 1.0f, 0.0f)
+            val center = floatArrayOf(cameraPos[0] + cameraFront[0], cameraPos[1] + cameraFront[1], cameraPos[2] + cameraFront[2])
+
+            Matrix.setLookAtM(it, 0, cameraPos[0], cameraPos[1], cameraPos[2], center[0], center[1], center[2], cameraUp[0], cameraUp[1], cameraUp[2])
+            mCamPosPre = cameraPos
+            Log.d("zhangbo", "mCamPosPre x: ${mCamPosPre[0]}, y: ${mCamPosPre[0]}")
+            Log.d("zhangbo", "mCamPos x: ${mCamPos[0]}, y: ${mCamPos[0]}")
         }
         val projectionMatrix = FloatArray(16).also {
             Matrix.perspectiveM(it, 0, 45.0f, mRatio, 0.1f, 100.0f)
@@ -166,6 +182,8 @@ class TransformRenderer : GLSurfaceView.Renderer {
     override fun onSurfaceChanged(p0: GL10?, width: Int, height: Int) {
         GLES30.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
         mRatio = width.toFloat() / height.toFloat()
+        mWidth = width.toFloat()
+        mHeight = height.toFloat()
     }
 
 
@@ -232,5 +250,28 @@ class TransformRenderer : GLSurfaceView.Renderer {
     private fun initTexture() {
         mTexture1 = Utils.loadTexture(R.drawable.container)
         mTexture2 = Utils.loadTexture(R.drawable.awesomeface)
+    }
+
+    fun setTouchLoc(x: Float, y: Float) {
+        mX = x
+        mY = y
+    }
+
+    fun setDeltaLoc(deltaX: Float, deltaY: Float) {
+        mDeltaX = deltaX
+        mDeltaY = deltaY
+    }
+
+    fun setCamPos(x: Float, y: Float, z: Float) {
+        mCamPos = pixelToGL(x, y, z)
+        Log.d("zhangbo", "setCamPos x: ${mCamPos[0]}, y: ${mCamPos[1]}")
+    }
+
+    fun updateCamPos() {
+        mCamPos = mCamPosPre
+    }
+
+    private fun pixelToGL(x: Float, y: Float, z: Float): FloatArray {
+        return floatArrayOf(x / mWidth / 2, y / mHeight / 2, z)
     }
 }
