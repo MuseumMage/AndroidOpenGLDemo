@@ -121,6 +121,9 @@ class TransformRenderer : GLSurfaceView.Renderer {
         GLES30.glActiveTexture(GLES30.GL_TEXTURE1)
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, mTexture2)
 
+        val transX = mDeltaX / mWidth * 2
+        val transY = -mDeltaY / mHeight * 2
+
         // transform chapter
 //        val transform = FloatArray(16)
 //        Matrix.setIdentityM(transform, 0)
@@ -143,10 +146,9 @@ class TransformRenderer : GLSurfaceView.Renderer {
 //            val time = SystemClock.uptimeMillis() % 4000L * 0.00090f
 //            val camX = sin(time) * 10f
 //            val camZ = cos(time) * 10f
-            val transX = mDeltaX / mWidth / 2
-            val transY = -mDeltaY / mHeight / 2
 
-            val cameraPos = floatArrayOf(mCamPos[0] - transX, mCamPos[1] - transY, 0.0f)
+            //val cameraPos = floatArrayOf(mCamPos[0] - transX, mCamPos[1] - transY, 0.0f)
+            val cameraPos = floatArrayOf(0.0f, 0.0f, 3.0f)
             val cameraFront = floatArrayOf(0.0f, 0.0f, -1.0f)
             val cameraUp = floatArrayOf(0.0f, 1.0f, 0.0f)
             val center = floatArrayOf(cameraPos[0] + cameraFront[0], cameraPos[1] + cameraFront[1], cameraPos[2] + cameraFront[2])
@@ -160,11 +162,20 @@ class TransformRenderer : GLSurfaceView.Renderer {
             Matrix.perspectiveM(it, 0, 45.0f, mRatio, 0.1f, 100.0f)
         }
 
+        val transformMatrix = FloatArray(16).also {
+            // set transform matrix
+            Matrix.setIdentityM(it, 0)
+            Matrix.translateM(it, 0, transX, transY, 0.0f)
+//            Log.d("zhangbo", "onDrawFrame: transX, $transX")
+//            Log.d("zhangbo", "onDrawFrame: transY, $transY")
+        }
+
         // set transform
 //        mShader.setMatrix("transform", transform)
 //        mShader.setMatrix("model", modelMatrix)
         mShader.setMatrix("view", viewMatrix)
         mShader.setMatrix("projection", projectionMatrix)
+        mShader.setMatrix("transform", transformMatrix)
 
         // draw 10 cubes
         for ((index, cube) in cubePositions.withIndex()) {
@@ -215,7 +226,6 @@ class TransformRenderer : GLSurfaceView.Renderer {
         // Add program to OpenGL ES environment
         mShader.use()
 
-        // todo: 可以抽象到shader.kt中
         val posHandle = GLES30.glGetAttribLocation(mShader.getProgram(), "aPos").also {
             vertexBuffer.position(0)
             GLES30.glVertexAttribPointer(
@@ -260,19 +270,19 @@ class TransformRenderer : GLSurfaceView.Renderer {
     fun setDeltaLoc(deltaX: Float, deltaY: Float) {
         mDeltaX = deltaX
         mDeltaY = deltaY
-        Log.d("zhangbo", "mCamPosPre x: ${mCamPosPre[0]}, y: ${mCamPosPre[0]}")
-        Log.d("zhangbo", "mCamPos x: ${mCamPos[0]}, y: ${mCamPos[0]}")
+//        Log.d("zhangbo", "mCamPosPre x: ${mCamPosPre[0]}, y: ${mCamPosPre[0]}")
+//        Log.d("zhangbo", "mCamPos x: ${mCamPos[0]}, y: ${mCamPos[0]}")
     }
 
     fun setCamPos(x: Float, y: Float, z: Float) {
         mCamPos = pixelToGL(x, y, z)
-        Log.d("zhangbo", "setCamPos x: ${mCamPos[0]}, y: ${mCamPos[1]}")
+//        Log.d("zhangbo", "setCamPos x: ${mCamPos[0]}, y: ${mCamPos[1]}")
     }
 
     fun updateCamPos() {
         mCamPos = mCamPosPre
-        Log.d("zhangbo", "mCamPosPre x: ${mCamPosPre[0]}, y: ${mCamPosPre[0]}")
-        Log.d("zhangbo", "mCamPos x: ${mCamPos[0]}, y: ${mCamPos[0]}")
+//        Log.d("zhangbo", "mCamPosPre x: ${mCamPosPre[0]}, y: ${mCamPosPre[0]}")
+//        Log.d("zhangbo", "mCamPos x: ${mCamPos[0]}, y: ${mCamPos[0]}")
     }
 
     private fun pixelToGL(x: Float, y: Float, z: Float): FloatArray {
