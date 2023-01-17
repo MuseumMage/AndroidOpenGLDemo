@@ -61,9 +61,12 @@ class TransformFragment : Fragment() {
 //                    Log.d("zhangbo", "moveDown x: ${event.x}, y: ${event.y}")
                     mOldX = event.x
                     mOldY = event.y
+                    mRender.setDeltaLoc(0.0f, 0.0f)
+                    mRender.updateCamPos()
                 }
                 if (event?.action == MotionEvent.ACTION_UP) {
 //                    Log.d("zhangbo", "moveUp x: ${event.x}, y: ${event.y}")
+                    mRender.setDeltaLoc(0.0f, 0.0f)
                     mRender.updateCamPos()
                 }
                 true

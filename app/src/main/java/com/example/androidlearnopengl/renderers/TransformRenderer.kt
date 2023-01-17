@@ -150,11 +150,11 @@ class TransformRenderer : GLSurfaceView.Renderer {
             val cameraFront = floatArrayOf(0.0f, 0.0f, -1.0f)
             val cameraUp = floatArrayOf(0.0f, 1.0f, 0.0f)
             val center = floatArrayOf(cameraPos[0] + cameraFront[0], cameraPos[1] + cameraFront[1], cameraPos[2] + cameraFront[2])
+            mCamPosPre = cameraPos
 
             Matrix.setLookAtM(it, 0, cameraPos[0], cameraPos[1], cameraPos[2], center[0], center[1], center[2], cameraUp[0], cameraUp[1], cameraUp[2])
-            mCamPosPre = cameraPos
-            Log.d("zhangbo", "mCamPosPre x: ${mCamPosPre[0]}, y: ${mCamPosPre[0]}")
-            Log.d("zhangbo", "mCamPos x: ${mCamPos[0]}, y: ${mCamPos[0]}")
+//            Log.d("zhangbo", "mCamPosPre x: ${mCamPosPre[0]}, y: ${mCamPosPre[0]}")
+//            Log.d("zhangbo", "mCamPos x: ${mCamPos[0]}, y: ${mCamPos[0]}")
         }
         val projectionMatrix = FloatArray(16).also {
             Matrix.perspectiveM(it, 0, 45.0f, mRatio, 0.1f, 100.0f)
@@ -260,6 +260,8 @@ class TransformRenderer : GLSurfaceView.Renderer {
     fun setDeltaLoc(deltaX: Float, deltaY: Float) {
         mDeltaX = deltaX
         mDeltaY = deltaY
+        Log.d("zhangbo", "mCamPosPre x: ${mCamPosPre[0]}, y: ${mCamPosPre[0]}")
+        Log.d("zhangbo", "mCamPos x: ${mCamPos[0]}, y: ${mCamPos[0]}")
     }
 
     fun setCamPos(x: Float, y: Float, z: Float) {
@@ -269,6 +271,8 @@ class TransformRenderer : GLSurfaceView.Renderer {
 
     fun updateCamPos() {
         mCamPos = mCamPosPre
+        Log.d("zhangbo", "mCamPosPre x: ${mCamPosPre[0]}, y: ${mCamPosPre[0]}")
+        Log.d("zhangbo", "mCamPos x: ${mCamPos[0]}, y: ${mCamPos[0]}")
     }
 
     private fun pixelToGL(x: Float, y: Float, z: Float): FloatArray {
