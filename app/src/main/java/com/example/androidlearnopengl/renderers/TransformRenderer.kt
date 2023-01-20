@@ -4,6 +4,7 @@ import android.opengl.GLES30
 import android.opengl.GLSurfaceView
 import android.opengl.Matrix
 import android.util.Log
+import android.view.MotionEvent
 import com.example.androidlearnopengl.R
 import com.example.androidlearnopengl.utils.Utils
 import java.nio.ByteBuffer
@@ -94,7 +95,10 @@ class TransformRenderer : GLSurfaceView.Renderer {
     private var mDeltaX: Float = 0.0f
     private var mDeltaY: Float = 0.0f
     private var mCamPos: FloatArray = floatArrayOf(0.0f, 0.0f, 3.0f)
-    private var mCamPosPre: FloatArray = floatArrayOf(0.0f, 0.0f, 3.0f)
+    private var mTransformMatrix: FloatArray = FloatArray(16).also {
+        Matrix.setIdentityM(it, 0)
+    }
+    private var mTouchStatus: Int = MotionEvent.ACTION_UP
 
     private val stride: Int = COORDS_PER_VERTEX_TRANSFORM * Float.SIZE_BYTES // 4 bytes per vertex
 
@@ -152,30 +156,42 @@ class TransformRenderer : GLSurfaceView.Renderer {
             val cameraFront = floatArrayOf(0.0f, 0.0f, -1.0f)
             val cameraUp = floatArrayOf(0.0f, 1.0f, 0.0f)
             val center = floatArrayOf(cameraPos[0] + cameraFront[0], cameraPos[1] + cameraFront[1], cameraPos[2] + cameraFront[2])
-            mCamPosPre = cameraPos
 
             Matrix.setLookAtM(it, 0, cameraPos[0], cameraPos[1], cameraPos[2], center[0], center[1], center[2], cameraUp[0], cameraUp[1], cameraUp[2])
-//            Log.d("zhangbo", "mCamPosPre x: ${mCamPosPre[0]}, y: ${mCamPosPre[0]}")
-//            Log.d("zhangbo", "mCamPos x: ${mCamPos[0]}, y: ${mCamPos[0]}")
         }
         val projectionMatrix = FloatArray(16).also {
             Matrix.perspectiveM(it, 0, 45.0f, mRatio, 0.1f, 100.0f)
         }
 
-        val transformMatrix = FloatArray(16).also {
-            // set transform matrix
-            Matrix.setIdentityM(it, 0)
-            Matrix.translateM(it, 0, transX, transY, 0.0f)
-//            Log.d("zhangbo", "onDrawFrame: transX, $transX")
-//            Log.d("zhangbo", "onDrawFrame: transY, $transY")
-        }
+//        val transformMatrix = FloatArray(16).also {
+//            // set transform matrix
+//            Matrix.setIdentityM(it, 0)
+//            Matrix.translateM(it, 0, transX, transY, 0.0f)
+////            Log.d("zhangbo", "onDrawFrame: transX, $transX")
+////            Log.d("zhangbo", "onDrawFrame: transY, $transY")
+//        }
 
         // set transform
 //        mShader.setMatrix("transform", transform)
 //        mShader.setMatrix("model", modelMatrix)
         mShader.setMatrix("view", viewMatrix)
         mShader.setMatrix("projection", projectionMatrix)
-        mShader.setMatrix("transform", transformMatrix)
+//        if (mTouchStatus == MotionEvent.ACTION_MOVE) {
+//            val transformMatrix = FloatArray(16).also {
+//                // set transform matrix
+//                Matrix.setIdentityM(it, 0)
+//                Matrix.translateM(it, 0, transX, transY, 0.0f)
+//                Log.d("zhangbo", "transX: $transX, transY: $transY")
+//                mTransformMatrix = it
+//            }
+//        }
+        val transformMatrix = FloatArray(16).also {
+                // set transform matrix
+                Matrix.setIdentityM(it, 0)
+                Matrix.translateM(it, 0, transX, transY, 0.0f)
+                mShader.setMatrix("transform", it)
+        }
+
 
         // draw 10 cubes
         for ((index, cube) in cubePositions.withIndex()) {
@@ -270,19 +286,14 @@ class TransformRenderer : GLSurfaceView.Renderer {
     fun setDeltaLoc(deltaX: Float, deltaY: Float) {
         mDeltaX = deltaX
         mDeltaY = deltaY
-//        Log.d("zhangbo", "mCamPosPre x: ${mCamPosPre[0]}, y: ${mCamPosPre[0]}")
-//        Log.d("zhangbo", "mCamPos x: ${mCamPos[0]}, y: ${mCamPos[0]}")
     }
 
     fun setCamPos(x: Float, y: Float, z: Float) {
         mCamPos = pixelToGL(x, y, z)
-//        Log.d("zhangbo", "setCamPos x: ${mCamPos[0]}, y: ${mCamPos[1]}")
     }
 
-    fun updateCamPos() {
-        mCamPos = mCamPosPre
-//        Log.d("zhangbo", "mCamPosPre x: ${mCamPosPre[0]}, y: ${mCamPosPre[0]}")
-//        Log.d("zhangbo", "mCamPos x: ${mCamPos[0]}, y: ${mCamPos[0]}")
+    fun setTouchStatus(touchStatus: Int) {
+        mTouchStatus = touchStatus
     }
 
     private fun pixelToGL(x: Float, y: Float, z: Float): FloatArray {

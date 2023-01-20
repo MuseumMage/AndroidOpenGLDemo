@@ -54,20 +54,20 @@ class TransformFragment : Fragment() {
             setOnTouchListener { v, event ->
                 if (event?.action == MotionEvent.ACTION_MOVE) {
                     //Log.d("zhangbo", "moveMove x: ${event.x}, y: ${event.y}")
-//                    mRender.setTouchLoc(event.x, event.y)
+                    mRender.setTouchStatus(MotionEvent.ACTION_MOVE)
                     mRender.setDeltaLoc(event.x - mOldX, event.y - mOldY)
                 }
                 if (event?.action == MotionEvent.ACTION_DOWN) {
 //                    Log.d("zhangbo", "moveDown x: ${event.x}, y: ${event.y}")
+                    mRender.setTouchStatus(MotionEvent.ACTION_DOWN)
                     mOldX = event.x
                     mOldY = event.y
                     mRender.setDeltaLoc(0.0f, 0.0f)
-                    mRender.updateCamPos()
                 }
                 if (event?.action == MotionEvent.ACTION_UP) {
 //                    Log.d("zhangbo", "moveUp x: ${event.x}, y: ${event.y}")
+                    mRender.setTouchStatus(MotionEvent.ACTION_UP)
                     mRender.setDeltaLoc(0.0f, 0.0f)
-                    mRender.updateCamPos()
                 }
                 true
             }
