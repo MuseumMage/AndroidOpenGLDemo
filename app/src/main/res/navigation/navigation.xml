@@ -21,6 +21,9 @@
         <action
             android:id="@+id/action_chooseFragment_to_transformFragment"
             app:destination="@id/transformFragment" />
+        <action
+            android:id="@+id/action_chooseFragment_to_lightingFragment"
+            app:destination="@id/lightingFragment" />
     </fragment>
 
     <fragment
@@ -44,4 +47,9 @@
         android:name="com.example.androidlearnopengl.fragments.TransformFragment"
         android:label="fragment_transform"
         tools:layout="@layout/fragment_transform" />
+    <fragment
+        android:id="@+id/lightingFragment"
+        android:name="com.example.androidlearnopengl.fragments.LightingFragment"
+        android:label="fragment_lighting"
+        tools:layout="@layout/fragment_lighting" />
 </navigation>

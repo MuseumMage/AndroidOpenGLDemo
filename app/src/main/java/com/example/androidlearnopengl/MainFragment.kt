@@ -44,6 +44,9 @@ class ChooseFragment : Fragment() {
         binding.transformButton.setOnClickListener{ view: View ->
             view.findNavController().navigate(R.id.action_chooseFragment_to_transformFragment)
         }
+        binding.lightingButton.setOnClickListener{ view: View ->
+            view.findNavController().navigate(R.id.action_chooseFragment_to_lightingFragment)
+        }
 
         return binding.root
     }
