@@ -3,7 +3,6 @@ package com.example.androidlearnopengl.renderers
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
 import android.opengl.Matrix
-import android.util.Log
 import android.view.MotionEvent
 import com.example.androidlearnopengl.R
 import com.example.androidlearnopengl.utils.Utils
@@ -98,6 +97,9 @@ class TransformRenderer : GLSurfaceView.Renderer {
     private var mTransformMatrix: FloatArray = FloatArray(16).also {
         Matrix.setIdentityM(it, 0)
     }
+    private var mTransMoveMatrix: FloatArray = FloatArray(16).also {
+        Matrix.setIdentityM(it, 0)
+    }
     private var mTouchStatus: Int = MotionEvent.ACTION_UP
 
     private val stride: Int = COORDS_PER_VERTEX_TRANSFORM * Float.SIZE_BYTES // 4 bytes per vertex
@@ -176,20 +178,22 @@ class TransformRenderer : GLSurfaceView.Renderer {
 //        mShader.setMatrix("model", modelMatrix)
         mShader.setMatrix("view", viewMatrix)
         mShader.setMatrix("projection", projectionMatrix)
-//        if (mTouchStatus == MotionEvent.ACTION_MOVE) {
-//            val transformMatrix = FloatArray(16).also {
-//                // set transform matrix
-//                Matrix.setIdentityM(it, 0)
-//                Matrix.translateM(it, 0, transX, transY, 0.0f)
-//                Log.d("zhangbo", "transX: $transX, transY: $transY")
-//                mTransformMatrix = it
-//            }
-//        }
-        val transformMatrix = FloatArray(16).also {
+
+        // transform under touch event
+        // mTransformMatrix 代表距离摄像机的初始位置的偏移量
+        // mTransMoveMatrix 代表在touch中的Move下的偏移量
+        if (mTouchStatus == MotionEvent.ACTION_MOVE) {
+            val transMoveMatrix = FloatArray(16).also {
                 // set transform matrix
                 Matrix.setIdentityM(it, 0)
                 Matrix.translateM(it, 0, transX, transY, 0.0f)
+                Matrix.multiplyMM(it, 0, it, 0, mTransformMatrix, 0)
                 mShader.setMatrix("transform", it)
+                mTransMoveMatrix = it
+            }
+        } else {
+            mTransformMatrix = mTransMoveMatrix
+            mShader.setMatrix("transform", mTransformMatrix)
         }
 
 
